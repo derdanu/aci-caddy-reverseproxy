@@ -1,0 +1,45 @@
+apiVersion: 2019-12-01
+location: northeurope
+name: myContainerGroup
+properties:
+  containers:
+  - name: caddy-reverse-proxy
+    properties:
+      image: caddy
+      command: 
+      - caddy 
+      - reverse-proxy
+      - --from 
+      - dafalknecaddy.northeurope.azurecontainer.io
+      - --to
+      - 127.0.0.1:8080
+      resources:
+        requests:
+          cpu: 1
+          memoryInGb: 1.5
+      ports:
+      - protocol: tcp
+        port: 80
+      - protocol: tcp
+        port: 443
+  - name: backend-application-server
+    properties:
+      image: tomcat
+      resources:
+        requests:
+          cpu: 1
+          memoryInGb: 1.5
+      ports:
+      - protocol: tcp 
+        port: 8080
+  osType: Linux
+  ipAddress:
+    type: Public
+    ports:
+    - protocol: tcp
+      port: 80
+    - protocol: tcp
+      port: 443
+    dnsNameLabel: dafalknecaddy
+tags: null
+type: Microsoft.ContainerInstance/containerGroups
